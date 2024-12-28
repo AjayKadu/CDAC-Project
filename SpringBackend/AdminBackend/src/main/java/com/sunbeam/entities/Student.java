@@ -31,13 +31,24 @@ public class Student {
     private Courses course;  
 
     private String address;
+    
     private String photoImageName;
 
     private LocalDate birthDate;
 
     private char gender;
+    
+    private String status;
 
-    @ManyToOne
+    public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	@ManyToOne
     @JoinColumn(name = "roleId") 
     private Role role;  
 

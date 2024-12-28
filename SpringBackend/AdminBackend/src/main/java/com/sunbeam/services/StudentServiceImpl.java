@@ -3,12 +3,15 @@ package com.sunbeam.services;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sunbeam.daos.StudentDao;
 import com.sunbeam.entities.Student;
 
+@Transactional
 @Service
 public class StudentServiceImpl implements StudentService {
 
@@ -54,6 +57,32 @@ public class StudentServiceImpl implements StudentService {
 	        return null;
 	    }
 	}
+
+	@Override
+	public Student addStudent(Student student) {
+		Student stud = studentDao.save(student);
+		return stud;
+	}
+
+	@Override
+	public String deleteStudent(int id) {
+	    
+	    int count = studentDao.changeStatus(id);
+	    
+	    if(count > 0) {
+	        return "Course status updated to inactive successfully.";
+	    } else {
+	        return "Course not found or status update failed.";
+	    }
+	}
+
+	@Override
+	public List<Student> getActiveStudents() {
+	List<Student> list	= studentDao.getCurrentStudent("active");
+		return list;
+	}
+
+	
 
 
 }

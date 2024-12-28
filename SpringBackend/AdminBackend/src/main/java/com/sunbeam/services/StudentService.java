@@ -12,4 +12,12 @@ public interface StudentService {
 
 	Student editStudent(Student student,int id);
 
+	Student addStudent(Student student);
+
+	String deleteStudent(int id);
+
+	List<Student> getActiveStudents();
+
+	
+
 }
