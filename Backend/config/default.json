@@ -1,0 +1,7 @@
+{
+    "host"     : "localhost",
+    "user"     : "W3_87373_Ajay",
+    "password" : "manager",
+    "database" : "institutemanagement",
+    "port"     : "4444"
+}
