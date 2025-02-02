@@ -1,0 +1,13 @@
+.sidebar-container {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    height: 100vh; /* Full height */
+  }
+  
+  .content-container {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
