@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .main {
     display: grid;
     grid-template-columns: repeat(2, 1fr); 
@@ -38,32 +37,4 @@ p{
     font-size: 18px;
     font-weight: 500;
    
-=======
-.main {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 40px; 
-    margin: 45px;
-}
-
-.main div {
-    width: 100%; 
-    height: 80px;
-}
-
-#div1{
-    background-color: #f977b6;
-}
-
-#div2{
-    background-color: #01CBC6;
-}
-
-#div3{
-    background-color: #e473fa;
-}
-
-#div4{
-    background-color: #F5BCBA;
->>>>>>> 6c66612726a1e75faf5c21fee22834d21ead4f96
 }

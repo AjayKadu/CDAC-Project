@@ -11,9 +11,9 @@ function AddFaculty() {
     gender: '',
     address: '',
     birthDate: '',
-    role: {roleId: ''},
-    courses : {courseId: ''}
-     
+    role: { roleId: '' },
+    courses: { courseId: '' },
+    image: null,  // New field for image
   });
 
   const [courses, setCourses] = useState([]); // Stores courses from API
@@ -31,45 +31,76 @@ function AddFaculty() {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-  
-    setFaculty((prev) => ({
-      ...prev,
-      [name]: value,
-      // Handle nested objects for role and courses
-      role: name === "roleId" ? { roleId: value } : prev.role,
-      courses: name === "courseId" ? { courseId: value } : prev.courses,
-    }));
+    const { name, value, type } = e.target;
+
+    if (type === 'file') {
+      setFaculty((prev) => ({
+        ...prev,
+        image: e.target.files[0],  // Store file object
+      }));
+    } else {
+      setFaculty((prev) => ({
+        ...prev,
+        [name]: value,
+        role: name === "roleId" ? { roleId: value } : prev.role,
+        courses: name === "courseId" ? { courseId: value } : prev.courses,
+      }));
+    }
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-
-      console.log('====================================');
-      console.log(faculty);
-      console.log('====================================');
-      const response = await axios.post('http://localhost:8082/faculty', faculty);
-      
-      if (response.data != null) {
-        navigate("/faculty");
+      let imageName = "";
+  
+      // Step 1: Upload Image First (if image is selected)
+      if (faculty.image) {
+        const imageFormData = new FormData();
+        imageFormData.append('file', faculty.image);
+  
+        const imageResponse = await axios.post('http://localhost:8082/upload/image', imageFormData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+  
+        imageName = imageResponse.data; // Assuming API returns only the image name
+      }
+  
+      // Step 2: Submit Faculty Details with Image Name
+      const facultyData = {
+        firstName: faculty.firstName,
+        lastName: faculty.lastName,
+        email: faculty.email,
+        password: faculty.password,
+        gender: faculty.gender,
+        address: faculty.address,
+        birthDate: faculty.birthDate,
+        role: { roleId: faculty.role.roleId },
+        courses: { courseId: faculty.courses.courseId },
+        photoImageName: imageName, // Store only image name
+      };
+  
+      const response = await axios.post('http://localhost:8082/faculty', facultyData, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+  
+      if (response.data) {
+        navigate("/facultys");
       } else {
         alert('Failed to add faculty. Please try again.');
       }
-      
     } catch (error) {
       console.error('Error adding faculty:', error);
       alert('An error occurred while adding faculty.');
     }
   };
+  
 
   return (
     <>
       <h2 className="text-center my-4">Add New Faculty</h2>
       <section className="container col-md-8">
-        <form onSubmit={handleSubmit} className="p-4 shadow rounded bg-light">
+        <form onSubmit={handleSubmit} className="p-4 shadow rounded bg-light" encType="multipart/form-data">
           {/* Faculty Information */}
           <div className="mb-3">
             <label className="form-label">First Name</label>
@@ -112,27 +143,32 @@ function AddFaculty() {
           </div>
 
           {/* Role Selection */}
-<div className="mb-3">
-  <label className="form-label">Role</label>
-  <select name="roleId" value={faculty.role.roleId} onChange={handleChange} className="form-control" required>
-    <option value="">Select Role</option>
-    <option value="1">Admin</option>
-  </select>
-</div>
+          <div className="mb-3">
+            <label className="form-label">Role</label>
+            <select name="roleId" value={faculty.role.roleId} onChange={handleChange} className="form-control" required>
+              <option value="">Select Role</option>
+              <option value="1">Admin</option>
+            </select>
+          </div>
 
-{/* Course Selection */}
-<div className="mb-3">
-  <label className="form-label">Course</label>
-  <select name="courseId" value={faculty.courses.courseId} onChange={handleChange} className="form-control" required>
-    <option value="">Select Course</option>
-    {courses.map((course) => (
-      <option key={course.courseId} value={course.courseId}>
-        {course.courseName}
-      </option>
-    ))}
-  </select>
-</div>
+          {/* Course Selection */}
+          <div className="mb-3">
+            <label className="form-label">Course</label>
+            <select name="courseId" value={faculty.courses.courseId} onChange={handleChange} className="form-control" required>
+              <option value="">Select Course</option>
+              {courses.map((course) => (
+                <option key={course.courseId} value={course.courseId}>
+                  {course.courseName}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          {/* Image Upload */}
+          <div className="mb-3">
+            <label className="form-label">Profile Picture</label>
+            <input type="file" name="image" accept="image/*" onChange={handleChange} className="form-control" required />
+          </div>
 
           {/* Submit Button */}
           <div className="d-flex justify-content-center">
