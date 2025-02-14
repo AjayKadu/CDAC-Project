@@ -4,11 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 @Entity
@@ -31,7 +33,7 @@ public class Faculty {
 	@Column(nullable=false)
 	private String password;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="courseId")
 	private Courses courses;
 	
@@ -41,12 +43,21 @@ public class Faculty {
 	
 	private Date birthDate;
 	
+	private String status;
+	
 	private char gender;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "roleId", nullable=false)
 	private Role role;
 	
+	
+	@PrePersist
+    public void prePersist() {
+        if (status == null || status.isEmpty()) {
+            this.status = "active";
+        }
+    }
 	
 	public Role getRole() {
 		return role;
@@ -95,8 +106,14 @@ public class Faculty {
 		this.password = password;
 	}
 	
-	
-	
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@Override
 	public String toString() {
 		return "Faculty [facultyId=" + facultyId + ", firstName=" + firstName + ", lastName=" + lastName + ", email="

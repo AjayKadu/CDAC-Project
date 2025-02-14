@@ -32,4 +32,11 @@ public class Role {
 
 	private String roleName;
 
+	@Override
+	public String toString() {
+		return "Role [roleId=" + roleId + ", roleName=" + roleName + "]";
+	}
+	
+	
+
 }
