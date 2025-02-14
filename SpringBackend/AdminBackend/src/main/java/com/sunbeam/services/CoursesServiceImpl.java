@@ -29,6 +29,7 @@ public class CoursesServiceImpl implements CoursesService {
 	@Override
 	public Courses addCourse(Courses cour) {
 	Courses cours = coursesDao.save(cour);
+	System.out.println(cours);
 		return cours;
 	}
 

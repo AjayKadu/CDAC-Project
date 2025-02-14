@@ -1,10 +1,12 @@
 package com.sunbeam.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 import javax.validation.constraints.Email;
@@ -26,7 +28,7 @@ public class Student {
 
     private String password;
     
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "courseId") 
     private Courses course;  
 
@@ -43,6 +45,13 @@ public class Student {
     public String getStatus() {
 		return status;
 	}
+    
+    @PrePersist
+    public void prePersist() {
+        if (status == null || status.isEmpty()|| status.equalsIgnoreCase("string")) {
+            this.status = "Active";
+        }
+    }
 
 	public void setStatus(String status) {
 		this.status = status;
